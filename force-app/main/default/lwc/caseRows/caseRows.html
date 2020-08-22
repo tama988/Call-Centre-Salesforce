@@ -1,0 +1,192 @@
+<template>
+    <lightning-card icon-name="custom:custom27" title="Cases List View">
+        <h1 class="title">Case Records</h1>
+        <lightning-button
+                label={toggleSaveLabel} 
+                icon-name="utility:save"
+                slot="actions"
+                variant="brand-outline"
+                disabled={checksave}
+                onclick={handleSave}
+                >
+            </lightning-button>
+            <lightning-button 
+                label="Cancel" 
+                icon-name="utility:cancel" 
+                slot="actions"
+                variant="destructive"
+                disabled={checkcancel}
+                onclick={handleCancel}>
+            </lightning-button>
+    
+            <div class="slds-m-around_medium slds-float_left">
+            <lightning-combobox style="width:100px; font-size: medium"
+                name="pagesize"
+                label="Page Size"
+                value={pageSize}
+                placeholder={pageSize}
+                options={options}
+                onchange={handlePageChange}>
+            </lightning-combobox>
+            </div>
+                
+            <div class="slds-m-around_medium slds-float_right">
+                <lightning-button 
+                label="Edit Records"
+                icon-name="utility:edit"
+                variant="brand"
+                disabled={disableEdit}
+                onclick={editTable}>
+            </lightning-button>
+            </div>
+               
+            <div class="slds-m-around_medium">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-border_right slds-border_left slds-table_col-bordered slds-table_resizable-cols">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="head" scope="col">
+                        <div class="slds-truncate" title="Case Number">Case Number</div>
+                    </th>
+                    <th class="head" scope="col">
+                        <div class="slds-truncate" title="Account Name">Account Name</div>
+                    </th>
+                    <th class="head" scope="col">
+                        <div class="slds-truncate" title="Contact Name">Contact Name</div>
+                    </th>
+                    <th class="head" scope="col">
+                        <div class="slds-truncate" title="Subject">Subject</div>
+                    </th>
+                    <th class="head" scope="col">
+                        <div class="slds-truncate" title="Case Reason">Case Reason</div>
+                    </th>
+                    <th class="head" scope="col">
+                        <div class="slds-truncate" title="Case Status">Case Status</div>
+                    </th>
+                    <th class="head" scope="col">
+                        <div class="slds-truncate" title="Case Origin">Case Origin</div>
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <template for:each={data} for:item="cas">
+                    <tr key={cas.Id}>
+                        <th scope="col">
+                        <template if:false={isEdited}>{cas.CaseNumber}</template>
+                    <template if:true={isEdited}>
+                        <div><a onclick={gotoRecord} data-id={cas.Id}>{cas.CaseNumber}</a></div>  
+                    </template>
+                        </th>
+                        <th scope="col">
+                            <div>{cas.Acc__c}</div>
+                        </th>
+                        <th scope="col">
+                            <div>
+                                <template if:false={isEdited}>{cas.Con__c}</template>
+                            <template if:true={isEdited}>
+                                <lightning-record-edit-form object-api-name='Case'>
+                                <lightning-input-field 
+                                variant="label-hidden"
+                                value={cas.ContactId}
+                                data-id={cas.Id}
+                                field-name='ContactId' 
+                                onchange={handleContact}>
+                                </lightning-input-field>
+                            </lightning-record-edit-form>
+                            </template>
+                        </div>
+                        </th>
+                        <th scope="col">
+                            <div>
+                                <template if:false={isEdited}>{cas.Subject}</template>
+                                <template if:true={isEdited}>
+                                    <lightning-record-edit-form object-api-name='Case'>
+                                        <lightning-input-field
+                                         variant="label-hidden" 
+                                         value={cas.Subject} 
+                                         data-id={cas.Id}
+                                         field-name='Subject'
+                                         onchange={handleSubject}
+                                         >
+                                        </lightning-input-field>
+                                    </lightning-record-edit-form> 
+                                </template>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div>
+                                <template if:false={isEdited}>{cas.Reason}</template>
+                                <template if:true={isEdited}>
+                                    <lightning-record-edit-form object-api-name='Case'>
+                                        <lightning-input-field
+                                         variant="label-hidden" 
+                                         value={cas.Reason} 
+                                         data-id={cas.Id}
+                                         field-name='Reason'
+                                         onchange={handleReason}
+                                         >
+                                        </lightning-input-field>
+                                    </lightning-record-edit-form>
+                                </template>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div>
+                                <template if:false={isEdited}>{cas.Status}</template>
+                                <template if:true={isEdited}>
+                                    <lightning-record-edit-form object-api-name='Case'>
+                                        <lightning-input-field
+                                         variant="label-hidden" 
+                                         value={cas.Status} 
+                                         data-id={cas.Id}
+                                         field-name='Status'
+                                         onchange={handleStatus}
+                                         >
+                                        </lightning-input-field>
+                                    </lightning-record-edit-form>
+                                </template>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div>
+                                <template if:false={isEdited}>{cas.Origin}</template>
+                                <template if:true={isEdited}>
+                                <lightning-record-edit-form object-api-name='Case'>
+                                    <lightning-input-field
+                                     variant="label-hidden" 
+                                     value={cas.Origin} 
+                                     data-id={cas.Id}
+                                     field-name='Origin'
+                                     onchange={handleOrigin}
+                                     >
+                                    </lightning-input-field>
+                                </lightning-record-edit-form>
+                            </template>
+                            </div>
+                        </th>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <lightning-button
+        label="Prev"  
+        slot="footer"
+        disabled={checkprev}
+        icon-name="utility:chevronleft"
+        onclick={handlePrev}
+        >
+    </lightning-button>
+    <lightning-button
+        label="Next"  
+        slot="footer"
+        disabled={checknext}
+        icon-name="utility:chevronright"
+        icon-position="right"
+        onclick={handleNext}
+        >
+    </lightning-button>
+    </div>
+    </lightning-card>
+</template>
