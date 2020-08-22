@@ -9,7 +9,6 @@ import STATUS_FIELD from '@salesforce/schema/Case.Status';
 import ORIGIN_FIELD from '@salesforce/schema/Case.Origin';
 import NAME_FIELD from '@salesforce/schema/Case.ContactId';
 import ID_FIELD from '@salesforce/schema/Case.Id';
-
 export default class CaseRows extends NavigationMixin(LightningElement) {
     @track data;
     @track error;
